@@ -1,0 +1,15 @@
+#NEXUS
+
+Begin data;
+Dimensions ntax=8 nchar=8;
+Format datatype=Standard missing=? gap=- labels="01";
+Matrix
+	T5_1	10000000
+	T7_1	01000000
+	T8_1	00100000
+	T21_1	00010000
+	T23_1	00001000
+	T28_1	00000100
+	T30_1	00000010
+	;
+End;

@@ -1,0 +1,8 @@
+README.md
+setup.py
+biogeo_cophylo_simstudy/__init__.py
+biogeo_cophylo_simstudy/biogeo_cophylo_simstudy.py
+biogeo_cophylo_simstudy.egg-info/PKG-INFO
+biogeo_cophylo_simstudy.egg-info/SOURCES.txt
+biogeo_cophylo_simstudy.egg-info/dependency_links.txt
+biogeo_cophylo_simstudy.egg-info/top_level.txt

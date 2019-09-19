@@ -1,0 +1,90 @@
+range_fn = "data/0.1_hsrate/0.1_hsrate_46.range.nex"
+tree_fn = "data/0.1_hsrate/0.1_hsrate_46_pruned_0.loc.tre"
+out_fn = "data/0.1_hsrate/output/0.1_hsrate_46"
+geo_fn = "data/0.1_hsrate/0.1_hsrate_46"
+times_fn = geo_fn + ".times.txt"
+dist_fn  = geo_fn + ".distances.txt"
+moves = VectorMoves()
+monitors = VectorMonitors()
+n_gen = 5000
+dat_range_01 = readDiscreteCharacterData(range_fn)
+n_areas <- dat_range_01.nchar()
+max_areas <- 2
+n_states <- 0
+for (k in 0:max_areas) n_states += choose(n_areas, k)
+dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC", n_states)
+state_desc = dat_range_n.getStateDescriptions()
+state_desc_str = "state,range"
+for (i in 1:state_desc.size())
+{
+	state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=" ")
+n_epochs <- time_bounds.nrows()
+for (i in 1:n_epochs) {
+	epoch_fn = geo_fn + ".connectivity." + i + ".txt"
+	connectivity[i] <- readDataDelimitedFile(file=epoch_fn, delimiter=" ")
+}
+distances <- readDataDelimitedFile(file=dist_fn, delimiter=" ")
+tree <- readTrees(tree_fn)[1]
+log10_rate_bg ~ dnUniform(-4,2)
+log10_rate_bg.setValue(-2)
+rate_bg := 10^log10_rate_bg
+moves.append( mvSlide(log10_rate_bg, weight=4) )
+dispersal_rate <- 1.0
+distance_scale ~ dnUnif(0,20)
+distance_scale.setValue(0.01)
+moves.append( mvScale(distance_scale, weight=3) )
+for (i in 1:n_epochs) {
+	for (j in 1:n_areas) {
+		for (k in 1:n_areas) {
+			dr[i][j][k] <- 0.0
+			if (connectivity[i][j][k] > 0) {
+				dr[i][j][k] := dispersal_rate
+			}
+		}
+	}
+}
+extirpation_rate ~ dnExponential(1.0)
+moves.append( mvScale(extirpation_rate, weight=5) )
+for (i in 1:n_epochs) {
+	for (j in 1:n_areas) {
+		for (k in 1:n_areas) {
+			er[i][j][k] <- 0.0
+		}
+		er[i][j][j] := extirpation_rate
+	}
+}
+for (i in n_epochs:1) {
+Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i], extirpationRates=er[i], maxRangeSize=max_areas,nullRange="CondSurv")
+}
+for (i in 1:n_epochs) {
+	time_max[i] <- time_bounds[i][1]
+	time_min[i] <- time_bounds[i][2]
+	if (i != n_epochs) {
+		epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
+		moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
+	} else {
+		epoch_times[i] <- 0.0
+	}
+}
+Q_DEC_epoch := fnEpoch(Q=Q_DEC, times=epoch_times, rates=rep(1, n_epochs))
+clado_event_types <- [ "s", "a" ]
+p_sympatry ~ dnUniform(0,1)
+p_allopatry := abs(1.0 - p_sympatry)
+clado_type_probs := simplex(p_sympatry, p_allopatry)
+moves.append( mvSlide(p_sympatry, weight=2) )
+P_DEC := fnDECCladoProbs(eventProbs=clado_type_probs, eventTypes=clado_event_types, numCharacters=n_areas, maxRangeSize=max_areas)
+rf_DEC <- rep(0, n_states)
+rf_DEC[2] <- 1
+rf_DEC_simp <- simplex(rf_DEC)
+m_bg ~ dnPhyloCTMCClado(tree=tree, Q=Q_DEC_epoch, cladoProbs=P_DEC, branchRates=rate_bg, rootFrequencies=rf_DEC_simp, type="NaturalNumbers", nSites=1)
+m_bg.clamp(dat_range_n)
+monitors.append( mnScreen(printgen=100, distance_scale, rate_bg, extirpation_rate) )
+monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+monitors.append( mnJointConditionalAncestralState(tree=tree, ctmc=m_bg, type="NaturalNumbers", withTips=true, withStartStates=true, filename=out_fn+".states.log", printgen=10) )
+mymodel = model(m_bg)
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.run(n_gen)

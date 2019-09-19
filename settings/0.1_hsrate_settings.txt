@@ -1,0 +1,15 @@
+-r 50
+-sbr 0.07
+-sdr 0.035
+-nt 8
+-gdr 0.0
+-gbr 0.0
+-nl 1
+-lgtr [2]
+-ng 1
+-ipp 1
+-sout 0
+-ne 1
+-o 0.1_hsrate
+-sd1 1861
+-sd2 2018
