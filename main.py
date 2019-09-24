@@ -75,14 +75,18 @@ for j in range(0, num_settings_regimes):
         symb_tree = Tree.get(path=symb_fn, schema="nexus", rooting="default-rooted")
 
         # prune extinct tips on symb tree
-        symb_newick_tree = symb_tree.as_string("newick")
-        #symb_newick_tree = re.sub(r'\_\d+', '', symb_newick_tree)
-        symb_tree = dendropy.Tree.get_from_string(symb_newick_tree, "newick")
+        symb_newick_tree = symb_tree.as_string("nexus")
+        symb_tree = dendropy.Tree.get_from_string(symb_newick_tree, "nexus")
         ext_labels = re.findall("X\d+.{1}\d+", symb_newick_tree)
-        symb_tree.prune_taxa_with_labels(ext_labels)
-        symb_tree.update_bipartitions()
-        symb_tree.write_to_path(data_dir[j] + prefix_fn[j] + str(i) + "_pruned" + symb_tree_suffix_fn, schema="nexus")
-        symb_newick_tree = symb_tree.as_string('newick')
+        taxa_set = re.findall("T\d+.{1}\d+", symb_newick_tree)
+        for k in range(0, len(ext_labels)):
+            ext_labels[k] = re.sub("_", " ", ext_labels[k])
+        for m in range(0, len(taxa_set)):
+            taxa_set[m] = re.sub("_", " ", taxa_set[m])
+        symb_tree.prune_taxa_with_labels(ext_labels, update_bipartitions=True)
+        symb_tree.write(path=data_dir[j] + prefix_fn[j] + str(i) + "_pruned" + symb_tree_suffix_fn,
+                                schema="nexus",
+                                suppress_taxa_blocks=True)
 
         # print out epoch times (no uncertainty in age here)
         out_fn = data_dir[j] + prefix_fn[j] + str(i)

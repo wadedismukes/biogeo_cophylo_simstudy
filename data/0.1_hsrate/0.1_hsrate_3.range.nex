@@ -1,7 +1,7 @@
 #NEXUS
 
 Begin data;
-Dimensions ntax=15 nchar=8;
+Dimensions ntax=8 nchar=8;
 Format datatype=Standard missing=? gap=- labels="01";
 Matrix
 	T5_1	10000000

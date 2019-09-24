@@ -1,7 +1,7 @@
-range_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.1_hsrate/0.1_hsrate_49.range.nex"
-tree_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.1_hsrate/0.1_hsrate_49_pruned_0.loc.tre"
-out_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.1_hsrate/output/0.1_hsrate_49"
-geo_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.1_hsrate/0.1_hsrate_49"
+range_fn = "data/0.1_hsrate/0.1_hsrate_49.range.nex"
+tree_fn = "data/0.1_hsrate/0.1_hsrate_49_pruned_0.loc.tre"
+out_fn = "data/0.1_hsrate/output/0.1_hsrate_49"
+geo_fn = "data/0.1_hsrate/0.1_hsrate_49"
 times_fn = geo_fn + ".times.txt"
 dist_fn  = geo_fn + ".distances.txt"
 moves = VectorMoves()
