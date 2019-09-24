@@ -1,15 +1,16 @@
 #NEXUS
 
 Begin data;
-Dimensions ntax=8 nchar=8;
+Dimensions ntax=10 nchar=8;
 Format datatype=Standard missing=? gap=- labels="01";
 Matrix
-	T7_1	10000000
-	T8_1	01000000
-	T11_1	00100000
-	T15_1	00010000
-	T16_1	00001000
-	T17_1	00000100
-	T18_1	00000010
+	T3_1	10000000
+	T5_1	01000000
+	T7_1	00100000
+	T8_1	00010000
+	T12_1	00001000
+	T15_1	00000100
+	T16_1	00000010
+	T17_1	00000001
 	;
 End;

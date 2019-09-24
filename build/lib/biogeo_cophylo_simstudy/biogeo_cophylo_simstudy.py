@@ -49,7 +49,7 @@ def print_nexus_range_file(ofn, host_tree, symb_tree):
 
     host_tips = re.findall("T\d+", host_tree_newick)
     symb_tips = re.findall("T\d+", symb_tree_newick)
-    for i in range(0, len(symb_tips) - 1):
+    for i in range(0, len(symb_tips)):
         curr_tip = symb_tips[i].split("_")
         curr_tip = curr_tip[0]
         range_data = ""

@@ -26,7 +26,7 @@ num_settings_regimes = len(trr)
 
 for i in range(0, num_settings_regimes):
     settings_regime_name = str(trr[i]) + "_hsrate"
-    settings_dictionary = td.create_settings_dictionary(sbr=br, sdr=dr, lgtr=[i], gbr=gbr, gdr=gdr, num_loci=nl,
+    settings_dictionary = td.create_settings_dictionary(sbr=br, sdr=dr, lgtr=trr[i], gbr=gbr, gdr=gdr, num_loci=nl,
                                                         reps=reps, num_genes=1, ipp=1, ne=1, ntax=nt, screen_out=0,
                                                         ofn=settings_regime_name, sd1=sd1[i], sd2=sd2[i])
 
@@ -76,9 +76,9 @@ for j in range(0, num_settings_regimes):
 
         # prune extinct tips on symb tree
         symb_newick_tree = symb_tree.as_string("newick")
-        symb_newick_tree = re.sub(r'_\d+', '', symb_newick_tree)
+        #symb_newick_tree = re.sub(r'\_\d+', '', symb_newick_tree)
         symb_tree = dendropy.Tree.get_from_string(symb_newick_tree, "newick")
-        ext_labels = re.findall("X\d+", symb_newick_tree)
+        ext_labels = re.findall("X\d+.{1}\d+", symb_newick_tree)
         symb_tree.prune_taxa_with_labels(ext_labels)
         symb_tree.update_bipartitions()
         symb_tree.write_to_path(data_dir[j] + prefix_fn[j] + str(i) + "_pruned" + symb_tree_suffix_fn, schema="nexus")

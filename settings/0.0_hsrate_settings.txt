@@ -5,7 +5,7 @@
 -gdr 0.0
 -gbr 0.0
 -nl 1
--lgtr [0]
+-lgtr 0.0
 -ng 1
 -ipp 1
 -sout 0
