@@ -122,7 +122,7 @@ def print_rev_script(dir_name, prefix_fn, i):
         lines.append("write(state_desc_str, file=out_fn+\".state_labels.txt\")\n")
 
         lines.append("time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=\" \")\n")
-        lines.append("n_epochs <- time_bounds.nrows()\n")
+        lines.append("n_epochs <- time_bounds.size()\n")
 
         lines.append("for (i in 1:n_epochs) {\n")
         lines.append("\tepoch_fn = geo_fn + \".connectivity.\" + i + \".txt\"\n")

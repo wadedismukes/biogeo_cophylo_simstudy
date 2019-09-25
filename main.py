@@ -61,8 +61,15 @@ symb_tree_suffix_fn = "_0.loc.tre"
 brtimes_suffix_fn = ".times.txt"
 ranges_suffix_fn = ".range.nex"
 
-data_dir = ["data/0.0_hsrate/", "data/0.1_hsrate/", "data/0.035_hsrate/", "data/0.5_hsrate/"]
-prefix_fn = ["0.0_hsrate_", "0.1_hsrate_", "0.035_hsrate_", "0.5_hsrate_"]
+server_specific_prefix = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/"
+data_dir = [server_specific_prefix + "data/0.0_hsrate/",
+            server_specific_prefix + "data/0.1_hsrate/",
+            server_specific_prefix + "data/0.035_hsrate/",
+            server_specific_prefix + "data/0.5_hsrate/"]
+prefix_fn = ["0.0_hsrate_",
+             "0.1_hsrate_",
+             "0.035_hsrate_",
+             "0.5_hsrate_"]
 
 for j in range(0, num_settings_regimes):
 
