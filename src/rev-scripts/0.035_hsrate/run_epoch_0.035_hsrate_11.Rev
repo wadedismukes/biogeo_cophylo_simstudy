@@ -1,7 +1,7 @@
-range_fn = "data/0.035_hsrate/0.035_hsrate_11.range.nex"
-tree_fn = "data/0.035_hsrate/0.035_hsrate_11_pruned_0.loc.tre"
-out_fn = "data/0.035_hsrate/output/0.035_hsrate_11"
-geo_fn = "data/0.035_hsrate/0.035_hsrate_11"
+range_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.035_hsrate/0.035_hsrate_11.range.nex"
+tree_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.035_hsrate/0.035_hsrate_11_pruned_0.loc.tre"
+out_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.035_hsrate/output/0.035_hsrate_11"
+geo_fn = "/work/LAS/phylo-lab/wade/biogeo_cophylo_simstudy/data/0.035_hsrate/0.035_hsrate_11"
 times_fn = geo_fn + ".times.txt"
 dist_fn  = geo_fn + ".distances.txt"
 moves = VectorMoves()
@@ -20,8 +20,8 @@ for (i in 1:state_desc.size())
 	state_desc_str += (i-1) + "," + state_desc[i] + "\n"
 }
 write(state_desc_str, file=out_fn+".state_labels.txt")
-time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=" ")
-n_epochs <- time_bounds.nrows()
+time_bounds <- readDataDelimitedFile(file=times_fn, delimiter="\t")
+n_epochs <- time_bounds.size()
 for (i in 1:n_epochs) {
 	epoch_fn = geo_fn + ".connectivity." + i + ".txt"
 	connectivity[i] <- readDataDelimitedFile(file=epoch_fn, delimiter=" ")
@@ -41,11 +41,15 @@ for (i in 1:n_epochs) {
 		for (k in 1:n_areas) {
 			dr[i][j][k] <- 0.0
 			if (connectivity[i][j][k] > 0) {
-				dr[i][j][k] := dispersal_rate
+				dr[i][j][k] := dispersal_rate * exp(-distance_scale * distances[j][k])
 			}
 		}
 	}
 }
+log_sd <- 0.5
+log_mean <- ln(1) - 0.5*log_sd^2
+extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
+moves.append( mvScale(extirpation_rate, weight=5) )
 extirpation_rate ~ dnExponential(1.0)
 moves.append( mvScale(extirpation_rate, weight=5) )
 for (i in 1:n_epochs) {
