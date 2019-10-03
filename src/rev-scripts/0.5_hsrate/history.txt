@@ -1,0 +1,83 @@
+source(
+"run_epoch_0.5_hsrate_9.Rev")
+epoch_times
+n_epochs
+Q_DEC
+length(Q_DEC)
+for (i in n_epochs:1) {
+Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i], extirpationRates=er[i], maxRangeSize=max_areas,nullRange="CondSurv")
+}
+connectivity
+connectivity[1
+]
+q()
+"run_epoch_0.5_hsrate_9.Rev")
+source("run_epoch_0.5_hsrate_9.Rev")
+n_epochs
+connectivity[1
+[
+connectivity[1]
+connectivity[8]
+ moves
+dispersal_rate
+for (i in 1:n_epochs) {
+AbstractHomologousDiscreteCharacterDatafor (j in 1:n_areas) {
+AbstractHomologousDiscreteCharacterData[]for (k in 1:n_areas) {
+AbstractHomologousDiscreteCharacterData[][]dr[i][j][k] <- 0.0
+AbstractHomologousDiscreteCharacterData[][]if (connectivity[i][j][k] > 0) {
+AbstractHomologousDiscreteCharacterData[][][]dr[i][j][k] := dispersal_rate
+AbstractHomologousDiscreteCharacterData[][]}
+AbstractHomologousDiscreteCharacterData[]}
+AbstractHomologousDiscreteCharacterData}
+}for(i in 1:n_epochs){
+for(i in 1:n_epochs){
+for (j in 1:n_areas) {
+for (k in 1:n_areas){
+dr[i][j][k] <- 0.0
+if(connectivity[i][j][k] > 0) { 
+dr[i][j][k] := dispersal_rate
+}
+extirpation_rate ~ dnExponential(1.0)
+moves.append( mvScale(extirpation_rate, weight=5) )
+for(i in 1:n_epochs) {
+for (j in 1:n_areas) {
+for (k in 1:n_areas) {
+er[i][j][k] <- 0.0
+}
+er[i][j][j] := extirpation_rate
+}
+for(i in n_epochs:1){
+Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i], extirpationRates=er[i], maxRangeSize=max_areas, nullRange="CondSurv")
+}
+for (i in 1:n_epochs) {
+time_max[i] <- time_bounds[i][1]
+time_min[i] <- time_bounds[i][2]
+if(i != n_epochs) { 
+epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
+        moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
+}
+else{
+epoch_times[i] <- 0.0
+}
+for (i in 1:n_epochs) {
+time_max[i] <- time_bounds[i][1]
+time_min[i] <- time_bounds[i][2]
+if(i != n_epochs) { 
+epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
+moves.append(mvSlide(epoch_times[i], delta=(time_max[i] -time_min[i] )/2) )
+} else {
+epoch_times[i] <- 0.0 
+}
+epoch_times
+time_bounds
+i
+n_epochs
+time_max
+time_bounds[1]p1]
+time_bounds[1][1]
+q()
+time_bounds[1][1]
+q()
+distance_scale
+distances
+q()

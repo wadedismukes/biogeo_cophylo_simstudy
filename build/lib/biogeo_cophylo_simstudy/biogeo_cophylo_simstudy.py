@@ -27,7 +27,7 @@ def print_branching_times(tree, brtimes_out_fn):
     with open(brtimes_out_fn, "w") as ofn:
         for i in range(0, len(node_ages)):
             print(str(node_ages[i]) + "\t" + str(node_ages_2[i]), file=ofn)
-
+        print(str(0.0) + "\t" + str(0.0), file=ofn)
 
 
 def print_nexus_range_file(ofn, host_tree, symb_tree):
@@ -66,14 +66,11 @@ def print_nexus_range_file(ofn, host_tree, symb_tree):
 
 
 def print_connectivity_graph(host_tree, of_prefix):
-    total_time = host_tree.max_distance_from_root()
-    num_host_lineages = host_tree.num_lineages_at(total_time)
-
-    num_epochs = num_host_lineages
-    for i in range(num_epochs):
+    num_epochs = len(host_tree.leaf_edges()) 
+    for i in range(0,num_epochs):
         connectivity_mat = np.zeros((num_epochs, num_epochs), dtype=int)
-        connectivity_mat[0:i, 0:i] = 1
-        ofn = of_prefix + "." + str(i) + ".txt"
+        connectivity_mat[0:i + 1, 0:i + 1] = 1
+        ofn = of_prefix + "." + str(i+1) + ".txt"
         with open(ofn, "w") as ff:
             np.savetxt(ff, connectivity_mat, fmt="%i", delimiter=" ", newline="\n")
 
@@ -121,8 +118,8 @@ def print_rev_script(dir_name, prefix_fn, i):
 
         lines.append("write(state_desc_str, file=out_fn+\".state_labels.txt\")\n")
 
-        lines.append("time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=\" \")\n")
-        lines.append("n_epochs <- time_bounds.nrows()\n")
+        lines.append("time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=\"\\t\")\n")
+        lines.append("n_epochs <- time_bounds.size()\n")
 
         lines.append("for (i in 1:n_epochs) {\n")
         lines.append("\tepoch_fn = geo_fn + \".connectivity.\" + i + \".txt\"\n")
@@ -136,7 +133,6 @@ def print_rev_script(dir_name, prefix_fn, i):
         lines.append("log10_rate_bg.setValue(-2)\n")
         lines.append("rate_bg := 10^log10_rate_bg\n")
         lines.append("moves.append( mvSlide(log10_rate_bg, weight=4) )\n")
-
         # lines.append("rate_bg <- 1.0\n")
 
         # lines.append("log_sd <- 0.5\n")
@@ -147,22 +143,21 @@ def print_rev_script(dir_name, prefix_fn, i):
         lines.append("distance_scale ~ dnUnif(0,20)\n")
         lines.append("distance_scale.setValue(0.01)\n")
         lines.append("moves.append( mvScale(distance_scale, weight=3) )\n")
-
         lines.append("for (i in 1:n_epochs) {\n")
         lines.append("\tfor (j in 1:n_areas) {\n")
         lines.append("\t\tfor (k in 1:n_areas) {\n")
         lines.append("\t\t\tdr[i][j][k] <- 0.0\n")
         lines.append("\t\t\tif (connectivity[i][j][k] > 0) {\n")
-        lines.append("\t\t\t\tdr[i][j][k] := dispersal_rate\n")
+        lines.append("\t\t\t\tdr[i][j][k] := dispersal_rate * exp(-distance_scale * distances[j][k])\n")
         lines.append("\t\t\t}\n")
         lines.append("\t\t}\n")
         lines.append("\t}\n")
         lines.append("}\n")
 
-        # lines.append("log_sd <- 0.5\n")
-        # lines.append("log_mean <- ln(1) - 0.5*log_sd^2\n")
-        # lines.append("extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)\n")
-        # lines.append("moves.append( mvScale(extirpation_rate, weight=5) )\n")
+        lines.append("log_sd <- 0.5\n")
+        lines.append("log_mean <- ln(1) - 0.5*log_sd^2\n")
+        lines.append("extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)\n")
+        lines.append("moves.append( mvScale(extirpation_rate, weight=5) )\n")
         lines.append("extirpation_rate ~ dnExponential(1.0)\n")
         lines.append("moves.append( mvScale(extirpation_rate, weight=5) )\n")
 

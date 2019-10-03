@@ -1,0 +1,13 @@
+source("run_epoch_0.035_hsrate_49.Rev")
+n_epochs <- time_bounds.nrows()
+n_epochs <- time_bounds.nrow()
+n_epochs <- time_bounds.nrows()
+n_epochs <- time_bounds.size()
+n_epochs
+q()
+n_epochs <- time_bounds.nrows()
+source("run_epoch_0.035_hsrate_49.Rev")
+q()
+source("run_epoch_0.035_hsrate_49.Rev")
+source("run_epoch_0.035_hsrate_0.Rev")
+q()

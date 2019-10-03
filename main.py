@@ -6,6 +6,7 @@ import subprocess
 from dendropy import Tree
 import pandas as pd
 import re
+import numpy as np
 
 nt = 8
 turnover = 0.5
@@ -43,15 +44,15 @@ def files(path):
 
 
 # TODO: get treeducken function for treeducken_tools running
-for s in files("settings/"):
-    run_cmd = "treeducken" + " -i " + "settings/" + s
-    so = os.popen(run_cmd).read()
-    print(so)
-    setting_prefix_list = s.split("_")
-    setting_prefix = str(setting_prefix_list[0]) + "_" + str(setting_prefix_list[1])
-    mv_cmd = "mv " + setting_prefix + "*" + " ./data/" + setting_prefix
-    so2 = os.popen(mv_cmd).read()
-    print(so2)
+#for s in files("settings/"):
+#    run_cmd = "treeducken" + " -i " + "settings/" + s
+#    so = os.popen(run_cmd).read()
+#    print(so)
+#    setting_prefix_list = s.split("_")
+#    setting_prefix = str(setting_prefix_list[0]) + "_" + str(setting_prefix_list[1])
+#    mv_cmd = "mv " + setting_prefix + "*" + " ./data/" + setting_prefix
+#    so2 = os.popen(mv_cmd).read()
+#    print(so2)
 
 # run_sim_regime < - function(sim_dir, prefix_fn, num_reps, use_full_tree=FALSE)
 
@@ -109,8 +110,9 @@ for j in range(0, num_settings_regimes):
         biogeo_cophylo_simstudy.print_connectivity_graph(host_tree=host_tree, of_prefix=connectivity_prefix_outfn)
 
         # print out "distance" matrix
-        dist_mat = host_tree.phylogenetic_distance_matrix()
+        dist_mat = host_tree.phylogenetic_distance_matrix(is_store_path_edges=True)
         distmat_ofn = out_fn + ".distances.txt"
-        dm_df = pd.DataFrame(data=dist_mat, index=host_tree.taxon_namespace)
+        dist_mat.write_csv(out=distmat_ofn, delimiter=" ", is_first_row_column_names=False, is_first_column_row_names=False)
+        
         biogeo_cophylo_simstudy.print_rev_script(data_dir[j], prefix_fn[j], i)
 

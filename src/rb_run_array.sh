@@ -13,6 +13,6 @@ all=$(ls)
 for sub in $all
 do
     cd $sub
-    sbatch --array=0-9 --job-name=$sub /work/LAS/phylo-lab/wade/dec-cophylo/utility_scripts/array_sub.sh $rb $sub
+    sbatch --array=0-49 --job-name=$sub /work/LAS/phylo-lab/wade/dec-cophylo/utility_scripts/array_sub.sh $rb $sub
     cd ../
 done
